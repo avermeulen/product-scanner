@@ -33,96 +33,64 @@
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/topcoat-mobile-light.css">
         <title>Hello World</title>
     </head>
     <body>
+
         <div id="scans">
-            <h3>Click the button to scan products</h3>
         </div>
-        <button type="button" class="button" name="button" id="scan" >Scan</button>
+        <img id="theImage" alt="" />
+
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/handlebars.min.js"></script>
         <script type="text/javascript" src="js/simpl.js"></script>
+        <script type="text/javascript" src="js/lodash.js"></script>
+        <script type="text/javascript" src="js/lawnchair.js"></script>
+        <script type="text/javascript" src="app.js"></script>
 
-        <script id="addNewProduct" type="x-handlebars-template">
-            <form id="addProductForm">
+        <script id="homepage" type="x-handlebars-template">
+            <div class="topcoat-navigation-bar">
+                <div class="topcoat-navigation-bar__item center full">
+                    <h1 class="topcoat-navigation-bar__title">Home</h1>
+                </div>
+            </div>
 
-              <h2>Add new product</h2>
-              <br>
-              Product code : {{productCode}}
-              <input type="hidden" id="productCode" value="{{productCode}}">
-              <br>
-              <input class="text" type="text" id="productName" value="" placeholder="add product name" >
-              <br>
-              <button class="button" type="button" name="button" id="addProduct">Add</button>
-
-          </form>
+            <div class="content scrollable">
+              <button class="topcoat-button--cta wideButton" id="scanButton">Scan</button>
+              <button class="topcoat-button--cta wideButton" id="cameraButton">Camera</button>
+            </div>
 
         </script>
+
+        <script id="addNewProduct" type="x-handlebars-template">
+
+            <div class="topcoat-navigation-bar">
+                <div class="topcoat-navigation-bar__item center full">
+                    <h1 class="topcoat-navigation-bar__title">Add new product</h1>
+                </div>
+            </div>
+
+            <div class="content scrollable">
+              <form id="addProductForm">
+                Product code : {{productCode}}
+                <input type="hidden" id="productCode" value="{{productCode}}">
+                <br>
+                <input type="text" class="topcoat-text-input" id="productName" placeholder="add product name">
+                <br>
+                <button class="topcoat-button--cta" id="addProduct" >Add</button>
+              </form>
+            </div>
+        </script>
+
         <script id="showExistingProduct" type="x-handlebars-template">
-          <h2>Product</h2>
+            <div class="topcoat-navigation-bar">
+                <div class="topcoat-navigation-bar__item center full">
+                    <h1 class="topcoat-navigation-bar__title">Product</h1>
+                </div>
+            </div>
           This is {{productName}}
         </script>
 
-        <script type="text/javascript">
-            document.addEventListener('deviceready', function(){
-
-                window.onerror = function(err){
-                    alert(err);
-                }
-
-                var scanButton = document.getElementById('scan');
-                var scans = document.getElementById("scans");
-
-                var inventory = {};
-
-                scanButton.addEventListener('click', function(){
-                    cordova.plugins.barcodeScanner.scan(
-                      function (result) {
-                          try{
-                                if (!inventory[result.text]){
-                                    template('addNewProduct')
-                                    .on('click', 'addProduct', function(){
-
-                                            var form = document.getElementById('addProductForm');
-
-                                            var productCode = form.elements['productCode'].value;
-                                            var productName = form.elements['productName'].value;
-
-                                            inventory[productCode] = productName;
-                                            scans.innerHTML = "";
-
-                                    })
-                                    .show('scans', {productCode : result.text})
-                                }
-                                else {
-                                    var productName = inventory[result.text];
-                                    template('showExistingProduct')
-                                        .show('scans',  {productName : productName});
-                                }
-                          }
-                          catch(err){
-                              alert(err);
-                          }
-                          //scans.innerHTML = scans.innerHTML + "<li>" + result.text + "</li>";
-
-                          /*
-                          alert("We got a barcode\n" +
-                                "Result: " + result.text + "\n" +
-                                "Format: " + result.format + "\n" +
-                                "Cancelled: " + result.cancelled);
-                          */
-
-                      },
-                      function (error) {
-                          alert("Scanning failed: " + error);
-                      }
-                   );
-
-                });
-
-
-            });
-        </script>
     </body>
 </html>
